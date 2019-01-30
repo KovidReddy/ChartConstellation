@@ -1,0 +1,774 @@
+
+
+<html>
+	<meta charset="utf-8">
+		<head>
+			<script src="http://d3js.org/d3.v3.min.js"></script>
+			<script src="http://bl.ocks.org/nitaku/raw/83f0df83b4de89eb2848/b1610013293366f6d5e21c6cd9f6d289ebd4dd4f/numeric-1.2.6.min.js"></script>
+			<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+			<script src="https://requirejs.org/docs/release/2.3.5/minified/require.js"></script>
+			<script src="mds.js"></script>
+			<script src="bubblesets.js" charset="utf-8"></script>
+			<link rel="stylesheet" type="text/css" href="index.css">
+			</head>
+			<body onload="load()" style="margin: 0px;">
+				<div style="float: left;  margin-left: 0.5rem; overflow: hidden;">
+					
+						<div style="float: left; border: solid 1px; border-radius: 4px; overflow: hidden; width: 11rem">
+							<center style="background-color: grey;">
+								<span style="vertical-align: top;">Filter Board</span>
+							</center>
+							<!-- </div> -->
+							<div style="height: 8rem; vertical-align: top; border: solid 1px;">
+								<div id="filterData" align="center" style="padding-top: 0px; ">
+									<p style="font-size: smaller" id="filterData1">Data Coverage:  </p>
+									<p style="font-size: smaller" id="filterData2">Keywords:  </p>
+									<p style="font-size: smaller" id="filterData3">Encoding Choices:  </p>
+								</div>
+							</div>
+							<div>
+								<center><input type="button" onclick="clearVal()" value="Clear All" /></center>
+							</div>
+						</div>
+					
+					<div>
+						<div style="float: left; border: solid 1px; border-radius: 4px; margin-top: 3rem; overflow: hidden;">
+							<center style="background-color: grey;">
+								<span style="vertical-align: top;">Option</span>
+							</center>
+							<!-- </div> -->
+							<div style="vertical-align: top; border: solid 1px;">
+								<div align="center" style="font-size: smaller;">
+									<button id="distButton" style="width: 100%; height:1.5rem;" onclick="clicked(this)"><i class="down"></i>Distance Weight</button>
+								</div>
+								<div class="distButtonPanel">
+									<div style="display:flex; flex-direction:column;">
+										<p style="font-size: small; margin-top: 10px; margin-bottom: 3px;" align="center">Data Coverage</p>
+										<input type="range" name="slideMarkValue" id="myRange" min="0" max="5" value="1" oninput="onChange(this)"></input>
+										<center>
+											<p id="slideMarkValue" style="margin-top: 5px"></p>
+										</center>
+									</div>
+									<div style="display:flex; flex-direction:column;">
+										<p style="font-size: small; margin-top: 10px; margin-bottom: 3px;" align="center">Keywords</p>
+										<input type="range" name="slideDistanceValue" id = "myRange1" min="0" max="5" value="1" oninput="onChange(this)"></input>
+										<center>
+											<p id="slideDistanceValue" style="margin-top: 5px"></p>
+										</center>
+									</div>
+									<div style="display:flex; flex-direction:column;">
+										<p style="font-size: small; margin-top: 10px; margin-bottom: 3px;" align="center">Encoding Choices</p>
+										<input type="range" name="slideDistanceValue2" id = "myRange2" min="0" max="5" value="1" oninput="onChange(this)"></input>
+										<center>
+											<p id="slideDistanceValue2" style="margin-top: 5px"></p>
+										</center>
+									</div>
+								</div>
+								<div align="center" style="font-size: smaller;">
+									<button style="width: 100%; height:1.5rem;" onclick="clicked(this)"><i class="right"></i>User List</button>
+									<div class="userButtonPanel" style="float: left; display: none">
+										<ul>
+										  <li><input type="checkbox" class="checkboxData" onchange="highlight()" value="Arvind">Arvind</input></li>
+										  <li><input type="checkbox" class="checkboxData" onchange="highlight()" value="Vishal">Vishal</input></li>
+										  <li><input type="checkbox" class="checkboxData" onchange="highlight()" value="Kovid">Kovid</input></li>
+										</ul>
+									</div>
+								</div>
+								<div align="center" style="font-size: smaller;">
+									<button style="width: 100%; height:1.5rem;" onclick="clicked(this)"><i class="right"></i>Chart Type List</button>
+									<div class="chartButtonPanel" style="display:none;">
+										<center><p>Chart Types</p></center>
+										<center><img width="160px" src="Charts/charttype.png"></img></center>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				
+				<div style="width: 800px; margin-left:200px">
+					<div id="tooltip"></div>
+					<svg id="svg" width="800px" height="500px"></svg>
+				</div>
+				<div>
+					<div style="width: 15rem; float: right; border: solid 1px; border-radius: 4px; margin-top: -31rem; margin-right: 0.5rem;overflow: hidden;">
+						<center style="background-color: grey; border-bottom: solid 1.5px;">
+							<button style="background-color: grey; width: 15rem; border-style: none;" class="panelContainer" onclick="clicked(this)"><i class="right"></i>Cluster Board</button>
+						</center>
+						<div class="clusterPanel">
+							<center><p>Cluster Analysis</p></center>
+							<center><img width="190px" src="Charts/cluster.png"></img></center>
+						</div>
+						<center style="background-color: grey;">
+							<button style="background-color: grey; width: 15rem; border-style: none;" class="panelContainer" onclick="clicked(this)"><i class="down"></i>Sentimental Analysis</button>
+						</center>
+						<!-- </div> -->
+						<div class="sentimentalPanel" style="display:block">
+							<center><p>Model Accuracy</p></center>
+							<img width="225px" src="ModelAccuracy.png"></img>
+						</div>
+						<div class="sentimentalPanel" style="display:block">
+							<center><p>Model Loss</p></center>
+							<img width="225px" src="ModelLoss.png"></img>
+						</div>
+					</div>
+				</div>
+				<script>
+		function clicked(element){
+
+			if(element.textContent == "Cluster Board") {
+				panels = document.getElementsByClassName("clusterPanel");
+			}
+			else if(element.textContent == "Sentimental Analysis"){
+				panels = document.getElementsByClassName("sentimentalPanel");
+			}
+			else if(element.textContent == "Distance Weight"){
+				panels = document.getElementsByClassName("distButtonPanel");
+			}
+			else if(element.textContent == "User List"){
+				panels = document.getElementsByClassName("userButtonPanel");
+			}
+			else if(element.textContent == "Chart Type List"){
+				panels = document.getElementsByClassName("chartButtonPanel");
+			}
+			var i;
+	        for(i=0; i<panels.length; i++){
+	        	panel = panels[i];
+	        	if (panel.style.display === "block") {
+	            	panel.style.display = "none";
+	            	element.firstChild.setAttribute("class", "right")
+	        	} else {
+	            	panel.style.display = "block";
+	            	element.firstChild.setAttribute("class", "down");
+	        	}
+	    	}
+		}
+
+		function highlight(){
+			var checkbox = document.getElementsByClassName("checkboxData");
+			var point = d3.selectAll(".point")[0];
+			for(var i=0; i<checkbox.length; i++) {
+
+				var index = i*3;
+
+				if(checkbox[i].checked){
+					point[index+0].childNodes[0].setAttribute("r", 15);
+					point[index+0].childNodes[1].setAttribute("r", 10);
+
+					point[index+1].childNodes[0].setAttribute("r", 15);
+					point[index+1].childNodes[1].setAttribute("r", 10);
+
+					point[index+2].childNodes[0].setAttribute("r", 15);
+					point[index+2].childNodes[1].setAttribute("r", 10);
+				}
+				else{
+
+					point[index+0].childNodes[0].setAttribute("r", 6);
+					point[index+0].childNodes[1].setAttribute("r", 4);
+
+					point[index+1].childNodes[0].setAttribute("r", 6);
+					point[index+1].childNodes[1].setAttribute("r", 4);
+
+					point[index+2].childNodes[0].setAttribute("r", 6);
+					point[index+2].childNodes[1].setAttribute("r", 4);
+
+				}
+			}
+		}
+
+		function clearVal(){
+			document.getElementById("filterData1").innerHTML = "";
+			document.getElementById("filterData2").innerHTML = "";
+			document.getElementById("filterData3").innerHTML = "";
+
+			document.getElementById("myRange").value = 5;
+			document.getElementById("myRange1").value = 5;
+			document.getElementById("myRange2").value = 5;
+			onChange(document.getElementById("myRange"));
+			onChange(document.getElementById("myRange1"));
+			onChange(document.getElementById("myRange2"));
+
+		}
+
+			
+			function onChange(element) {		  	
+			   document.getElementById(element.name).innerHTML = (element.value*20) + "%";
+
+			   var dataforFilter = document.getElementById("filterData");
+			   var sliderdata = [];
+			   document.getElementById("filterData1").innerHTML = "Data Coverage: " + document.getElementById("myRange").value * 20 + "%";
+			   document.getElementById("filterData2").innerHTML = "Keywords: " + document.getElementById("myRange1").value * 20 + "%";
+			   document.getElementById("filterData3").innerHTML = "Encoding Choices: " + document.getElementById("myRange2").value * 20 + "%";
+
+			 //   for( var i=0; i<3; i++){
+			 //   	var dataReceived = sliderdata[i];
+
+			 //   	dataforFilter.append(dataReceived);
+				// }
+			   
+			   load();
+			 }  
+			// bubble Set code
+			
+			 function appendSVG(parent, name) {
+			 return parent.appendChild(document.createElementNS("http://www.w3.org/2000/svg", name));
+			}
+			
+			function removeAllChilds(parent) {
+			 while(parent.firstChild) {
+			   parent.removeChild(parent.firstChild);
+			 }
+			}
+			
+			function attr(elem, attr) {
+			 for(key in attr) {
+			   var value = attr[key];
+			   if(value === null) {
+			     elem.removeAttribute(key);
+			   } else {
+			     elem.setAttribute(key, value);
+			   }
+			 }
+			}
+			
+			function style(elem, style) {
+			 for(key in style) {
+			   var value = style[key];
+			   if(value === null) {
+			     delete elem.style.removeProperty(key);
+			   } else {
+			     elem.style.setProperty(key, value);
+			   }
+			 }
+			}
+			
+			// K Means Function
+			function kmeans( arrayToProcess, Clusters )
+			{
+			
+			 var Groups = new Array();
+			 var Centroids = new Array();
+			 var oldCentroids = new Array();
+			 var changed = false;
+			
+			 // order the input array
+			 arrayToProcess.sort(function(a,b){return a - b})  
+			 
+			 // initialise group arrays
+			 for( initGroups=0; initGroups < Clusters; initGroups++ )
+			 {
+			 
+			   Groups[initGroups] = new Array();
+			
+			 }  
+			 
+			 // pick initial centroids
+			 
+			 initialCentroids=Math.round( arrayToProcess.length/(Clusters+1) );  
+			 
+			 for( i=0; i
+					<Clusters; i++ )
+			 {
+			 
+			   Centroids[i]=arrayToProcess[ (initialCentroids*(i+1)) ];
+			 
+			 }
+			 
+			 do
+			 {
+			 
+			   for( j=0; j
+						<Clusters; j++ )
+			{
+			
+			  Groups[j] = [];
+			
+			}
+			 
+			   changed=false;
+			
+			for( i=0; i
+							<arrayToProcess.length; i++ )
+			{
+			
+			  Distance=-1;
+			  oldDistance=-1
+			
+				  for( j=0; j
+								<Clusters; j++ )
+			  {
+			  
+			       distance = Math.abs( Centroids[j]-arrayToProcess[i] );	
+				
+				if ( oldDistance==-1 )
+				{
+				
+				   oldDistance = distance;
+				   newGroup = j;
+				
+				}
+				else if ( distance <= oldDistance )
+				{
+				  
+				    newGroup=j;
+					oldDistance = distance;
+				  
+				}
+			  
+			  }	
+			  
+			  Groups[newGroup].push( arrayToProcess[i] );	  
+			
+			}
+			 
+			   oldCentroids=Centroids;
+			 
+			   for ( j=0; j
+									<Clusters; j++ )
+			{
+			 
+			     total=0;
+			  newCentroid=0;
+			  
+			  for( i=0; i
+										<Groups[j].length; i++ )
+			  {
+			  
+			    total+=Groups[j][i];
+			  
+			  } 
+			
+			  newCentroid=total/Groups[newGroup].length;  
+			  
+			  Centroids[j]=newCentroid;
+			  
+			}
+			 
+			   for( j=0; j<Clusters; j++ )
+			{
+			
+			  if ( Centroids[j]!=oldCentroids[j] )
+			  {
+			  
+			    changed=true;
+			  
+			  }
+			
+			}
+			 
+			 }
+			 while( changed==true );
+			 
+			 return Groups;
+			 
+			}
+			
+			// Bubble Set code ends.
+			
+			 function load() {  	
+			var MARGIN, enter_points, height, indicators, keys, links, links_data, m, max_x, max_y, min_x, min_y, points, points_data, svg, width, x, y;
+			var slider = document.getElementById("myRange");
+			var slider1 = document.getElementById("myRange1");
+			var slider2 = document.getElementById("myRange2");
+			console.log(slider.value);
+			// Bubble Set code starts		
+			  svg = d3.select('#svg');
+			  svg.selectAll("*").remove();
+			    var bubbles = new BubbleSet();
+			       var main = document.getElementById("svg");
+			       var items = appendSVG(main, "g");
+			       var pathA = appendSVG(main, "path");
+			       var pathB = appendSVG(main, "path");
+			       // var debug = appendSVG(main, "g");
+			       bubbles.debug(false);
+			       var debugFor = pathA;
+			 // BubbleSet Code Ends			 
+			
+			  MARGIN = 100;
+			
+			  width = 800;//svg.node().getBoundingClientRect().width;
+			
+			  height = 500;//svg.node().getBoundingClientRect().height;
+			
+			  keys = [];
+			
+			// Fetch the data from the backend system 
+			
+			var jsonData ;
+			var temparr = [];
+			var temparr1 = [];
+			var temparr2 = [];
+			var num;
+			var mainarr = []; // Key Word
+			var mainarr1 = []; // Dimension	
+			var mainarr2 = []; // Chart Encoding distance
+			var arr1 = [];
+			var arr2 = [];
+			var arr3 = [];
+			var str = " " ;
+			
+			
+			$.getJSON('weights.json', function(json)
+				{
+				   //console.log(json["1"]);
+				   arr1 = json["1"].split(",");
+				   arr2 = json["2"].split(",");
+				   arr3 = json["0"].split(",");
+								
+				   var i;
+				   for (i=0; i<=100; i++)
+				   {
+				   	if((i%10) == 0){
+				   		if(i == 100){
+				   			mainarr.push(temparr);
+				   			mainarr1.push(temparr1);
+				   			mainarr2.push(temparr2);
+				   			continue;
+				   		}		   		
+				   		// First Array
+				   		str = arr1[i];
+				   		str = str.replace('[[','');
+				   		str = str.replace('[',''); 
+				   		str = str.replace(']','');
+				   		str = str.replace(']]','');
+				   		num = parseFloat(str)
+			
+				   		//Second Array
+				   		str1 = arr2[i];
+				   		str1 = str1.replace('[[','');
+				   		str1 = str1.replace('[',''); 
+				   		str1 = str1.replace(']','');
+				   		str1 = str1.replace(']]','');
+				   		num1 = parseFloat(str1)
+			
+				   		//Third Array
+				   		str2 = arr3[i];
+				   		str2 = str2.replace('[[','');
+				   		str2 = str2.replace('[',''); 
+				   		str2 = str2.replace(']','');
+				   		str2 = str2.replace(']]','');
+				   		num2 = parseFloat(str2)
+			
+				   		if (temparr.length != 0){
+				   			mainarr.push(temparr);
+				   			mainarr1.push(temparr1);
+				   			mainarr2.push(temparr2);
+				   		}
+				   		temparr = [];
+				   		temparr1 = [];
+				   		temparr2 = [];
+				   		temparr.push(num);
+				   		temparr1.push(num1);
+				   		temparr2.push(num2);
+				   		}
+				   else{
+				   	str = arr1[i];
+				   	str1 = arr2[i];
+				   	str2 = arr3[i];
+				   	num = parseFloat(str);
+				   	num1 = parseFloat(str1);
+				   	num2 = parseFloat(str2);
+				   	temparr.push(num);
+				   	temparr1.push(num1);
+				   	temparr2.push(num2);
+				   }
+				   	
+				   }
+			  //console.log(mainarr);
+			  //console.log(mainarr1);
+			  //console.log(mainarr2);
+			  //console.log()
+			  //console.log(mainarr.length);
+			
+			// Add the three Matrices using the Slider Values
+			var j;
+			var temp;
+			var tempe = [];
+			var finalarr = [] ;
+			console.log(slider.value);
+			for (i=0; i<10; i++)
+				{
+					for(j=0; j<10; j++)
+					{
+						temp = ((slider.value * mainarr[i][j]) + (slider1.value * mainarr1[i][j]) + (slider2.value * mainarr2[i][j]));
+						tempe.push(temp);
+					}
+			
+				finalarr.push(tempe);
+				tempe = [];		
+				}
+			  console.log(finalarr);	
+			
+			  //console.log(m);
+			  //console.log(m.length)
+			  points_data = mds_classic(finalarr);
+			  //console.log(points_data);
+			  min_x = d3.min(points_data, function(d) {
+			    return d[0];
+			  });
+			
+			  max_x = d3.max(points_data, function(d) {
+			    return d[0];
+			  });
+			
+			  min_y = d3.min(points_data, function(d) {
+			    return d[1];
+			  });
+			
+			  max_y = d3.max(points_data, function(d) {
+			    return d[1];
+			  });
+			
+			  x = d3.scale.linear().domain([max_x, min_x]).range([MARGIN, width - MARGIN]);
+			
+			  y = d3.scale.linear().domain([min_y, max_y]).range([MARGIN, height - MARGIN]);
+			
+			  links_data = [];
+			
+			  points_data.forEach(function(p1, i1) {
+			    var array;
+			    array = [];
+			    points_data.forEach(function(p2, i2) {
+			      if (i1 !== i2) {
+			        return array.push({
+			          source: p1,
+			          target: p2,
+			          dist: finalarr[i1][i2]
+			        });
+			      }
+			    });
+			    return links_data = links_data.concat(array);
+			  });
+			
+			// Bubble set code starts
+			    count =0;
+			    var pointA =[];
+			    var pointB =[];
+			    var elem = appendSVG(items, "rect");
+			
+			// Bubble Set code ends.
+			
+			  links = svg.selectAll('.link').data(links_data);
+			  links.enter().append('line').attr({
+			    "class": 'link',
+			    x1: function(d) {
+			      return x(d.source[0]);
+			    },
+			    y1: function(d) {
+			      return y(d.source[1]);
+			    },
+			    x2: function(d) {
+			      return x(d.target[0]);
+			    },
+			    y2: function(d) {
+			      return y(d.target[1]);
+			    }
+			  });
+			
+			
+			  points = svg.selectAll('.point').data(points_data);
+			  console.log(points_data);
+			  enter_points = points.enter().append('g').attr({
+			    "class": 'point',
+			    transform: function(d) {
+			      return "translate(" + (x(d[0])) + "," + (y(d[1])) + ")";
+			    }
+			  });
+			
+			  enter_points.append('circle').attr({
+			    r: 6,
+			    opacity: 0.3
+			  });
+			
+			  enter_points.append('circle').attr({
+			    r: 4
+			  });
+			
+			  enter_points.append('text').text(function(d, i) {
+			    return keys[i];
+			  }).attr({
+			    y: 12,
+			    dy: '0.35em'
+			  });
+
+			  var tooltip = d3.select("#tooltip").attr("class", "tooltip").style("opacity", 0);
+			
+			  // enter_points.append('title').text(function(d, i) {
+			  //   return d[0] + ", " + d[1];
+			  // });
+
+
+			
+			  indicators = svg.selectAll('.indicator').data(links_data);
+			
+			  indicators.enter().append('circle').attr({
+			    "class": 'indicator',
+			    r: 5,
+			    cx: function(d) {
+			      var mul;
+			      mul = d.dist / Math.sqrt(Math.pow(d.target[1] - d.source[1], 2) + Math.pow(d.target[0] - d.source[0], 2));
+			      return x(d.source[0]) + mul * (x(d.target[0]) - x(d.source[0]));
+			    },
+			    cy: function(d) {
+			      var mul;
+			      mul = d.dist / Math.sqrt(Math.pow(d.target[1] - d.source[1], 2) + Math.pow(d.target[0] - d.source[0], 2));
+			      return y(d.source[1]) + mul * (y(d.target[1]) - y(d.source[1]));
+			    }
+			  });
+			
+			
+			// Bubble Set Code
+			  pointForBubble = svg.selectAll('circle');
+			  attr(elem, {
+			     x: x,
+			     y: y,
+			     width: width,
+			     height: height,
+			   });
+			   style(elem, {
+			     "stroke": "White",
+			     "stroke-width": 1,
+			     "fill": "White",
+			     // "fill": "None",
+			   });
+
+			 pointForBubble.on("mouseover", function(d){
+			 	
+			 	var index;
+			 	var e = document.getElementsByClassName("point");
+			 	for (i = 0; i < e.length; i++) {
+			 		var p = e[i].__data__;
+			 		if((d[0]==p[0]) && (d[1] == p[1])){
+			 			index = i+1;
+			 			break;
+			 		}
+			 	}
+
+			 	var jsonURL = "Charts/TrumpvHiliary"+index+".json";
+			 	var chartDesc, chartAuthor, chartType;
+
+			 	var chartUrl = "Charts/chart"+index+".png";
+
+			 	var fetchChart =  '<img src="chartUrl"></img>'
+
+			 	$('#tooltip').append('<img id="chartUrl" width="auto" height="auto" />');
+
+			 	document.getElementById("chartUrl").src = chartUrl;
+
+			 	tooltip
+			 	.style("left", (d3.event.pageX) + "px")
+	        	.style("top", (d3.event.pageY) + "px")
+	        	.style("opacity", 0.9)
+	        	.style("display","block");
+
+			 })
+			 .on("mouseout", function(d){
+			 	tooltip.html("").style("display","none")
+			 });
+
+			    
+			 var e = document.getElementsByClassName("point");
+			 var chartData = [
+					{"sentiment": "T", "desc": "Chart 1"},
+					{"sentiment": "T", "desc": "Chart 2"},
+					{"sentiment": "C", "desc": "Chart 3"},
+					{"sentiment": "C", "desc": "Chart 4"},
+					{"sentiment": "T", "desc": "Chart 5"},
+					{"sentiment": "C", "desc": "Chart 6"},
+					{"sentiment": "T", "desc": "Chart 7"},
+					{"sentiment": "T", "desc": "Chart 8"},
+					{"sentiment": "T", "desc": "Chart 9"},
+					{"sentiment": "C", "desc": "Chart 10"}
+				];
+			
+			  var finalPoints = [];
+			  for (i = 0; i < e.length; i++) {
+			       var f = e[i].getAttribute("transform");  
+			       var q = f.split('(')[1];
+			       finalPoints.push({x:q.split(',')[0], y:q.split(',')[1].split(')')[0]})
+			   }
+
+			   finalPoints.forEach(function(p1, i1) {
+			       if(chartData[i1].sentiment=="T"){
+			           pointA.push({x:p1.x, y:p1.y, width:2, height:2, elem: elem});
+			       }
+			       else{
+			          pointB.push({x:p1.x, y:p1.y, width:2, height:2, elem: elem});
+			       }
+			      count++;
+			     });
+			
+			 function update() {
+			   updateOutline(pointA, pointB, "crimson", pathA);
+			   updateOutline(pointB, pointA, "cornflowerblue", pathB);
+			 }
+			
+			 function updateOutline(rectangles, otherRectangles, color, path) {
+			   var pad = 5;
+			   var list = bubbles.createOutline(
+			     BubbleSet.addPadding(rectangles, pad),
+			     BubbleSet.addPadding(otherRectangles, pad),
+			     null /* lines */
+			   );
+			
+			   var outline = new PointPath(list).transform([
+			     new ShapeSimplifier(0.0),
+			     new BSplineShapeGenerator(),
+			     new ShapeSimplifier(0.0),
+			   ]);
+			
+			   attr(path, {
+			     "d": outline,
+			     "opacity": 0.5,
+			     "fill": color,
+			     // "fill": "None",
+			     "stroke": "black",
+			   });
+			   
+			   //var pathArea = d3.selectAll("path").on("click", function(){alert("Hello");});
+
+			   if(bubbles.debug() && path === debugFor) {
+			     removeAllChilds(debug);
+			     bubbles.debugPotentialArea().forEach(function(r) {
+			       var rect = appendSVG(debug, "rect");
+			       attr(rect, {
+			         x: r.x,
+			         y: r.y,
+			         width: r.width,
+			         height: r.height
+			       });
+			       var color = r.value === r.threshold ? "0, 0, 0" : r.value > 0 ? "150, 20, 20" : "20, 20, 150";
+			       style(rect, {
+			         "fill": "rgb(" + color + ")",
+			         // "fill": "None",
+			         "opacity": r.value === r.threshold ? 0.5 : Math.min(255, Math.abs(r.value * 40)) / 255.0
+			       });
+			     });
+			   }
+			   };
+			
+			
+			
+			   update();
+			});  
+			
+			  
+			   // var json = require('./data.json'); //with path
+			
+			   // var readJson = (path, cb) => {
+			   // fs.readFile(require.resolve(path), (err, data) => {
+			   //     if (err)
+			   //       cb(err)
+			   //     else
+			   //       cb(null, JSON.parse(data))
+			   // })
+			// }
+			
+			
+			
+			} 
+		
+		</script>
+	</body>
+</html>
+
